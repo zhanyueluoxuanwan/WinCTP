@@ -6,19 +6,9 @@
 
 MdSpi::MdSpi(CThostFtdcMdApi *mdapi) {
 	//init api
+	fd = new FT_DATA();
 	mymdapi = mdapi;
 	myloginID = 10;
-	//creating market file
-	time_t now = time(0);
-	GetLocalTime(&market_time);
-	market_file_name = "./MarketData/" + std::to_string(market_time.wYear) + std::to_string(market_time.wMonth) + std::to_string(market_time.wDay) + ".csv";
-	market_file.open(market_file_name, ios::app);
-	cout << "Creating market file: " << market_file_name << endl;
-	if (market_file.is_open())
-		cout << "Successful creating market file" << endl;
-	else
-		cout << "Error in creating file" << endl;
-
 	//reading instruments
 	ifstream instrumentFile("InstrumentID.txt");
 	if (instrumentFile.is_open()) {
@@ -37,14 +27,14 @@ MdSpi::MdSpi(CThostFtdcMdApi *mdapi) {
 	else
 		cout << "Cannot read instruments!" << endl;
 
-}
+};
 
 MdSpi::~MdSpi() {
 	for (int i = 0; i < instrumentNum; i++)
 		delete[] instrumentID[i];
 	delete[] instrumentID;
-	
-}
+	delete fd;
+};
 
 void MdSpi::OnFrontConnected() {
 	//processing connected operation
@@ -60,7 +50,7 @@ void MdSpi::OnFrontConnected() {
 	strcpy_s(mylogin->Password, password.c_str());
 	mymdapi->ReqUserLogin(mylogin, myloginID);
 	std::cout << "Connected" << endl;
-}
+};
 
 void MdSpi::OnRspUserLogin(CThostFtdcRspUserLoginField *pRspUserLogin, CThostFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {
 	cout << "Request login\n";
@@ -71,7 +61,7 @@ void MdSpi::OnRspUserLogin(CThostFtdcRspUserLoginField *pRspUserLogin, CThostFtd
 		int ret = mymdapi->SubscribeMarketData(instrumentID, instrumentNum);
 		cout << ((ret == 0) ? "Successful subscribe!" : "Failed subscribe!") << endl;
 	}
-}
+};
 
 void MdSpi::OnRspUserLogout(CThostFtdcUserLogoutField *pUserLogout, CThostFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {};
 
@@ -79,15 +69,27 @@ void MdSpi::OnRspSubMarketData(CThostFtdcSpecificInstrumentField *pSpecificInstr
 	cout << "Market data respones" << endl;
 	cout << "Instruments:" << pSpecificInstrument->InstrumentID << endl;
 	cout << "ResponseInfo:" << pRspInfo->ErrorID << " " << pRspInfo->ErrorMsg << endl;
-}
+};
 
 void MdSpi::OnRtnDepthMarketData(CThostFtdcDepthMarketDataField *MarketData) {
-	if(!market_file.is_open())
-		market_file.open(market_file_name, ios::app);
-	market_file << MarketData->InstrumentID << "," << MarketData->UpdateTime << "." << MarketData->UpdateMillisec << "," << MarketData->LastPrice
-		<< "," << MarketData->Volume << "," << MarketData->BidPrice1 << "," << MarketData->BidVolume1 << "," << MarketData->AskPrice1
-		<< "," << MarketData->AskVolume1 << "," << MarketData->OpenInterest << "," << MarketData->Turnover << endl;
-	market_file.close();
+	fd->id = MarketData->InstrumentID;
+	fd->time = MarketData->TradingDay;
+	fd->time += '-';
+	fd->time += MarketData->UpdateTime;
+	fd->time += '-';
+	fd->time += std::to_string(MarketData->UpdateMillisec);
+	fd->open = MarketData->OpenPrice;
+	fd->high = MarketData->HighestPrice;
+	fd->low = MarketData->LowestPrice;
+	fd->close = MarketData->LastPrice;
+	fd->ask1 = MarketData->AskPrice1;
+	fd->bid1 = MarketData->BidPrice1;
+	fd->askvol1 = MarketData->AskVolume1;
+	fd->bidvol1 = MarketData->BidVolume1;
+	fd->vol = MarketData->Volume;
+	fd->interest = MarketData->Turnover;
+	fd->holding = MarketData->OpenInterest;
+	db->DBInsert(fd);
 };
 
 void MdSpi::OnRspUnSubMarketData(CThostFtdcSpecificInstrumentField *pSpecificInstrument, CThostFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {

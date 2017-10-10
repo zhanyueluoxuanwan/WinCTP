@@ -6,11 +6,12 @@
 
 class DBWriter{
 public:
-	DBWriter();					//构造函数，进行数据库链接
-	~DBWriter();				//析构函数，用于释放资源
+	DBWriter();							//构造函数，进行数据库链接
+	virtual ~DBWriter();				//析构函数，用于释放资源
 	virtual void DBRead();				//读取数据库内容，用于测试
-	void DBInsert(FT_DATA &fd); //将信息插入到数据库中
-	void DBDelete();			//删除，暂时不许需要
+	virtual void DBInsert(FT_DATA *fd); //将信息插入到数据库中
+	void DBDelete();					//删除，暂时不需要
+	const DBWriter *GetInstance();		//返回常量形数据库指针
 private:
 	MYSQL *my_db;
 	string user;

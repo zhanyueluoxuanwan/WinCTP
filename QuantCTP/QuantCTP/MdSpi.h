@@ -1,11 +1,12 @@
-//行情继承头文件
+//行情接收单元头文件
 #pragma once
 
+#include "DBWriter.h"
 #include ".\win64api\ThostFtdcMdApi.h"
-#include<ctime>
-#include<cstring>
-#include<string>
-#include<fstream>
+#include <ctime>
+#include <cstring>
+#include <string>
+#include <fstream>
 
 class MdSpi : public CThostFtdcMdSpi {
 public:
@@ -31,6 +32,9 @@ public:
 	//disconnected
 	void OnFrontDisconnected(int nReason) {};
 
+	//get database pointer
+	void GetDBInstance(DBWriter *inst) { db = inst; };
+
 private:
 	CThostFtdcMdApi *mymdapi;
 	CThostFtdcReqUserLoginField *mylogin;
@@ -40,7 +44,6 @@ private:
 	string password;
 	int instrumentNum;
 	char **instrumentID;
-	string market_file_name;
-	fstream market_file;
-	SYSTEMTIME market_time;
+	FT_DATA *fd;
+	DBWriter *db;
 };

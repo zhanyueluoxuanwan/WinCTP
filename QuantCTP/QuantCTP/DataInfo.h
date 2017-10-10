@@ -14,9 +14,9 @@ typedef struct{
 	double bid1;
 	double askvol1;
 	double bidvol1;
-	double vol; //成交量
-	double interest; //成交额
-	double holding; //持仓
+	double vol;			//成交量
+	double interest;	//成交额
+	double holding;		//持仓
 }FT_DATA;
 
 //基础信息类头文件
