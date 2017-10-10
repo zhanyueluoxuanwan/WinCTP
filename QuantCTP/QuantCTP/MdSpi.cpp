@@ -39,6 +39,13 @@ MdSpi::MdSpi(CThostFtdcMdApi *mdapi) {
 
 }
 
+MdSpi::~MdSpi() {
+	for (int i = 0; i < instrumentNum; i++)
+		delete[] instrumentID[i];
+	delete[] instrumentID;
+	
+}
+
 void MdSpi::OnFrontConnected() {
 	//processing connected operation
 	broker = BROKER_ID;

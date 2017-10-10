@@ -1,18 +1,17 @@
 //行情继承头文件
 #pragma once
 
-#include ".\win32api\ThostFtdcMdApi.h"
-#include<iostream>
+#include ".\win64api\ThostFtdcMdApi.h"
 #include<ctime>
 #include<cstring>
 #include<string>
 #include<fstream>
-using namespace std;
 
 class MdSpi : public CThostFtdcMdSpi {
 public:
 	//use mdapi to construct an instance
 	MdSpi(CThostFtdcMdApi *mdapi);
+	~MdSpi();
 	//construct connection
 	void OnFrontConnected();
 	//Response the login request

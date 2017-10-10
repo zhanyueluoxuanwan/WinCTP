@@ -13,10 +13,12 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
-  </ItemGroup>
-  <ItemGroup>
-    <Text Include="ReadMe.txt" />
-    <Text Include="InstrumentID.txt" />
+    <Filter Include="trade api">
+      <UniqueIdentifier>{1ecec6b8-35ed-4144-81ef-104ba217b8f7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="mysql lib">
+      <UniqueIdentifier>{ae78676d-b910-4971-82e6-da9ab0e1ba93}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h">
@@ -25,13 +27,16 @@
     <ClInclude Include="targetver.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="DataInfo.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="DBWriter.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
     <ClInclude Include="MdSpi.h">
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="TraderSpi.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="DataInfo.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>
@@ -42,6 +47,9 @@
     <ClCompile Include="QuantCTP.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="DBWriter.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
     <ClCompile Include="MdSpi.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
@@ -50,11 +58,25 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <None Include="win32api\thostmduserapi.dll" />
-    <None Include="win32api\thosttraderapi.dll" />
+    <None Include="win64api\thostmduserapi.dll">
+      <Filter>trade api</Filter>
+    </None>
+    <None Include="win64api\thosttraderapi.dll">
+      <Filter>trade api</Filter>
+    </None>
+    <None Include="libmysql.dll">
+      <Filter>mysql lib</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
-    <Library Include="win32api\thostmduserapi.lib" />
-    <Library Include="win32api\thosttraderapi.lib" />
+    <Library Include="win64api\thostmduserapi.lib">
+      <Filter>trade api</Filter>
+    </Library>
+    <Library Include="win64api\thosttraderapi.lib">
+      <Filter>trade api</Filter>
+    </Library>
+    <Library Include="libmysql.lib">
+      <Filter>mysql lib</Filter>
+    </Library>
   </ItemGroup>
 </Project>
