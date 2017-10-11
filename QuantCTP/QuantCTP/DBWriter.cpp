@@ -63,12 +63,12 @@ void DBWriter::DBInsert(FT_DATA *fd) {
 	insert_sentence += std::to_string(fd->interest) + ", ";
 	insert_sentence += std::to_string(fd->holding) + ");";
 	int res = mysql_query(my_db, insert_sentence.c_str());
+	/*
 	if (!res) {
 		cout << "Successfully inserted contract info!" << endl;
 	}
-	else {
-		cout << mysql_error(my_db) << endl;
-	}
+	*/
+	if (res) cout << mysql_error(my_db) << endl;
 }
 
 const DBWriter *DBWriter::GetInstance() {

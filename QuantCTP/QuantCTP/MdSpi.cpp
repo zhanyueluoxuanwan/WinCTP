@@ -34,6 +34,7 @@ MdSpi::~MdSpi() {
 		delete[] instrumentID[i];
 	delete[] instrumentID;
 	delete fd;
+	delete db;
 };
 
 void MdSpi::OnFrontConnected() {
