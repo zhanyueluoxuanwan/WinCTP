@@ -10,7 +10,7 @@ MdSpi::MdSpi(CThostFtdcMdApi *mdapi) {
 	mymdapi = mdapi;
 	myloginID = 10;
 	//reading instruments
-	ifstream instrumentFile("InstrumentID.txt");
+	ifstream instrumentFile(INSTRUMENT_FILE);
 	if (instrumentFile.is_open()) {
 		string len;
 		getline(instrumentFile, len);
@@ -26,7 +26,7 @@ MdSpi::MdSpi(CThostFtdcMdApi *mdapi) {
 	}
 	else
 		cout << "Cannot read instruments!" << endl;
-
+	instrumentFile.close();
 };
 
 MdSpi::~MdSpi() {
@@ -39,18 +39,24 @@ MdSpi::~MdSpi() {
 
 void MdSpi::OnFrontConnected() {
 	//processing connected operation
+	//采取自动读取用户名和密码，进行系统内置重连
+	ifstream uid(UID);
+	if (uid.is_open()) {
+		getline(uid, user_id);
+		getline(uid, password);
+		cout << "完成载入用户名和密码！" << endl;
+	}
+	else
+		cout << "无用户名和密码文件!" << endl;
+	uid.close();
 	broker = BROKER_ID;
-	cout << "请输入用户名：";
-	cin>>user_id;
-	cout << "请输入密码：";
-	cin >> password;
-	cout << endl;
 	mylogin = new CThostFtdcReqUserLoginField();
 	strcpy_s(mylogin->BrokerID, broker.c_str());
 	strcpy_s(mylogin->UserID, user_id.c_str());
 	strcpy_s(mylogin->Password, password.c_str());
 	mymdapi->ReqUserLogin(mylogin, myloginID);
 	std::cout << "Connected" << endl;
+
 };
 
 void MdSpi::OnRspUserLogin(CThostFtdcRspUserLoginField *pRspUserLogin, CThostFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {
