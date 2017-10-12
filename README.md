@@ -1,3 +1,3 @@
 CTP project
 
-行情接收机
+Market data receiver
